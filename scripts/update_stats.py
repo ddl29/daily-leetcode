@@ -5,12 +5,12 @@ from datetime import date
 import subprocess
 
 # CSV path
-CSV_FILE = Path("../problems.csv")
-CHARTS_DIR = Path("../charts")
+CSV_FILE = Path("problems.csv")
+CHARTS_DIR = Path("charts")
 CHARTS_DIR.mkdir(exist_ok=True)
 
 # Walk through the repo and find the latest file added
-for file_path in Path("../").rglob("*.*"):
+for file_path in Path(".").rglob("*.*"):
     if file_path.suffix not in [".js", ".py", ".java"]:
         continue
     # Here you could filter to only new files pushed if needed
