@@ -122,22 +122,52 @@ else:
 
 total_problems = len(df)
 
+# -------------------------------
 # Update total problems solved
+# -------------------------------
 pattern_total = r"^## Total problems solved: \d+"
 if re.search(pattern_total, readme_text, flags=re.MULTILINE):
     readme_text = re.sub(pattern_total, f"## Total problems solved: {total_problems}", readme_text, flags=re.MULTILINE)
 else:
     readme_text = f"## Total problems solved: {total_problems}\n\n" + readme_text
 
-# Update topics checklist
+# -------------------------------
+# Prepare checklist for HTML table
+# -------------------------------
 all_topics = sorted(set(";".join(df["Topics"].dropna()).split(";")) - {""})
-checklist = "\n".join([f"- [x] {t}" for t in all_topics])
+checklist_html = "\n".join([f"- [x] {t}" for t in all_topics])
 
-pattern_topics = r"## Topics Covered.*?(?=\n##|\Z)"
-if re.search(pattern_topics, readme_text, flags=re.S):
-    readme_text = re.sub(pattern_topics, f"## Topics Covered\n{checklist}\n", readme_text, flags=re.S)
+# -------------------------------
+# Update table cell or insert table if missing
+# -------------------------------
+pattern_table_cell = r"(<td>\s*## Topics Covered\s*)(.*?)(\s*</td>)"
+
+if re.search(pattern_table_cell, readme_text, flags=re.S):
+    # Replace only the checklist inside the Topics cell
+    readme_text = re.sub(pattern_table_cell, rf"\1{checklist_html}\3", readme_text, flags=re.S)
 else:
-    readme_text += f"\n\n## Topics Covered\n{checklist}\n"
+    # Insert table at the top after total problems
+    table_html = f"""
+<table>
+<tr>
+<td>
 
-# Write the updated README back to disk
+![Difficulty Pie](charts/difficulty_pie.png)
+
+</td>
+<td>
+
+## Topics Covered
+{checklist_html}
+
+</td>
+</tr>
+</table>
+"""
+    # Insert table after the total problems line
+    readme_text = re.sub(pattern_total, f"## Total problems solved: {total_problems}\n\n{table_html}", readme_text, flags=re.MULTILINE)
+
+# -------------------------------
+# Write updated README
+# -------------------------------
 readme_file.write_text(readme_text)

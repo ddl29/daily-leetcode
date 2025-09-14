@@ -1,6 +1,6 @@
 # Daily LeetCode Practice 🧑‍💻
 
-## Total problems solved: 4
+## Total problems solved: 3
 
 <table>
 <tr>
@@ -16,8 +16,12 @@
 - [x] dummy
 - [x] dynamic_programming
 - [x] graph
-- [x] hast_table
+- [x] hash_table
 - [x] test
+
+</td>
+</tr>
+</table>
 
 ### Historic log
 ![Cumulative Line](charts/cumulative_line.png)
