@@ -4,6 +4,7 @@ from pathlib import Path
 from datetime import date
 import subprocess
 import re
+from pathlib import Path
 
 # CSV path
 CSV_FILE = Path("problems.csv")
@@ -64,12 +65,8 @@ readme_text = readme_file.read_text()
 
 total_problems = len(df)
 
-# Replace the line starting with "- Total problems solved:" and bold number
-readme_text = re.sub(
-    r"^(\s*-\s*Total problems solved:\s*\*\*)\d+(\*\*)",
-    rf"\1{total_problems}\2",
-    readme_text,
-    flags=re.MULTILINE
-)
+pattern = r"^(\s*-\s*Total problems solved:\s*\*\*)\d+(\*\*)"
+
+readme_text = re.sub(pattern, lambda m: f"{m.group(1)}{total_problems}{m.group(2)}", readme_text, flags=re.MULTILINE)
 
 readme_file.write_text(readme_text)
