@@ -45,19 +45,45 @@ for file_path in Path(".").rglob("*.*"):
         }])], ignore_index=True)
         df.to_csv(CSV_FILE, index=False)
 
-# Generate charts
+
+# Read CSV
 df = pd.read_csv(CSV_FILE)
-# Difficulty pie
-df['Difficulty'].value_counts().plot.pie(autopct='%1.1f%%', colors=['#8ecae6','#219ebc','#023047'])
+
+# -------------------------------
+# Difficulty Pie Chart
+# -------------------------------
+# Ensure all difficulties are included even if count is 0
+difficulty_order = ['Easy', 'Medium', 'Hard']
+df['Difficulty'] = pd.Categorical(df['Difficulty'], categories=difficulty_order)
+difficulty_counts = df['Difficulty'].value_counts().sort_index()
+
+plt.figure(figsize=(5,5))  # square figure for pie
+difficulty_counts.plot.pie(
+    autopct='%1.1f%%',
+    colors=['#8ecae6', '#219ebc', '#023047'],
+    startangle=90
+)
 plt.title('Problems by Difficulty')
+plt.ylabel('')  # remove default ylabel
+plt.tight_layout()
 plt.savefig(CHARTS_DIR / "difficulty_pie.png")
 plt.close()
 
-# Topic bar
-df['Topic'].value_counts().plot.bar(color='#fb8500')
+# -------------------------------
+# Topic Bar Chart
+# -------------------------------
+# Sort topics alphabetically or by your preferred order
+topic_counts = df['Topic'].value_counts().sort_index()
+plt.figure(figsize=(6,4))
+topic_counts.plot.bar(color='#fb8500')
 plt.title('Problems by Topic')
+plt.ylabel('Count')
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
 plt.savefig(CHARTS_DIR / "topics_bar.png")
 plt.close()
+
+
 
 # Update README total problems solved count
 readme_file = Path("README.md")
