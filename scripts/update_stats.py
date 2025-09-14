@@ -118,29 +118,26 @@ readme_file = Path("README.md")
 if readme_file.exists():
     readme_text = readme_file.read_text()
 else:
-    readme_text = "# LeetCode Progress\n\n# Total problems solved: 0\n"
+    readme_text = "# Daily LeetCode Practice 🧑‍💻\n\n## Total problems solved: 0\n"
 
 total_problems = len(df)
 
-# Update total problems line
-pattern = r"^## Total problems solved: \d+"
-readme_text = re.sub(
-    pattern,
-    f"# Total problems solved: {total_problems}",
-    readme_text,
-    flags=re.MULTILINE,
-)
+# Update total problems solved
+pattern_total = r"^## Total problems solved: \d+"
+if re.search(pattern_total, readme_text, flags=re.MULTILINE):
+    readme_text = re.sub(pattern_total, f"## Total problems solved: {total_problems}", readme_text, flags=re.MULTILINE)
+else:
+    readme_text = f"## Total problems solved: {total_problems}\n\n" + readme_text
 
-# Add topics checklist
+# Update topics checklist
 all_topics = sorted(set(";".join(df["Topics"].dropna()).split(";")) - {""})
 checklist = "\n".join([f"- [x] {t}" for t in all_topics])
 
-if "## Topics Covered" in readme_text:
-    readme_text = re.sub(
-        r"## Topics Covered.*?(?=\n##|\Z)",
-        f"## Topics Covered\n{checklist}\n",
-        readme_text,
-        flags=re.S,
-    )
+pattern_topics = r"## Topics Covered.*?(?=\n##|\Z)"
+if re.search(pattern_topics, readme_text, flags=re.S):
+    readme_text = re.sub(pattern_topics, f"## Topics Covered\n{checklist}\n", readme_text, flags=re.S)
 else:
     readme_text += f"\n\n## Topics Covered\n{checklist}\n"
+
+# Write the updated README back to disk
+readme_file.write_text(readme_text)

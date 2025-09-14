@@ -1,10 +1,18 @@
 # Daily LeetCode Practice 🧑‍💻
 
-## Total problems solved: 0
+## Total problems solved: 3
 
 ![Difficulty Pie](charts/difficulty_pie.png)
 ![Cumulative Line](charts/cumulative_line.png)
 
+---
+## Topics Covered
+- [x] array
+- [x] dummy
+- [x] dynamic_programming
+- [x] graph
+- [x] hast_table
+- [x] test
 ---
 
 ## 🚀 How to Use This Repo
@@ -68,5 +76,3 @@ When you commit and push:
 2. Name the file properly.
 3. Use the correct commit message.
 4. Push → automation handles the rest.
-
----
