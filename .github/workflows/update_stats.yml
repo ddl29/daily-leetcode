@@ -32,7 +32,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add problems.csv
-          if compgen -G "charts/*.png" > /dev/null; then git add charts/*.png; fi
+          git add problems.csv charts/*.png
           git commit -m "Update LeetCode stats and charts" || echo "No changes to commit"
           git push
