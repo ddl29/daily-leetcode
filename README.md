@@ -1,7 +1,7 @@
 # Daily LeetCode Practice 🧑‍💻
 
 ## 📊 Summary
-- Total problems solved: **123**
+- Total problems solved: **1**
 - Distribution by difficulty:
   ![Difficulty Pie](charts/difficulty_pie.png)
 - Distribution by topic:
