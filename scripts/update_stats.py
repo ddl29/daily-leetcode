@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from datetime import date
 import subprocess
+import re
 
 # CSV path
 CSV_FILE = Path("problems.csv")
@@ -12,6 +13,8 @@ CHARTS_DIR.mkdir(exist_ok=True)
 # Walk through the repo and find the latest file added
 for file_path in Path(".").rglob("*.*"):
     if file_path.suffix not in [".js", ".py", ".java"]:
+        continue
+    if "scripts" in file_path.parts:  # skip files inside scripts folder
         continue
     # Here you could filter to only new files pushed if needed
 
@@ -55,14 +58,16 @@ plt.title('Problems by Topic')
 plt.savefig(CHARTS_DIR / "topics_bar.png")
 plt.close()
 
-# Read README
+# Update README total problems solved count
 readme_file = Path("README.md")
 readme_text = readme_file.read_text()
 
-# Update total problems
 total_problems = len(df)
-import re
-readme_text = re.sub(r"Total problems solved: \d+", f"Total problems solved: {total_problems}", readme_text)
+# Replace the line containing "Total problems solved:"
+readme_text = re.sub(
+    r"Total problems solved: \*\*\d+\*\*",
+    f"Total problems solved: **{total_problems}**",
+    readme_text
+)
 
-# Save
 readme_file.write_text(readme_text)
