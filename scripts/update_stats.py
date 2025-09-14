@@ -54,3 +54,15 @@ df['Topic'].value_counts().plot.bar(color='#fb8500')
 plt.title('Problems by Topic')
 plt.savefig(CHARTS_DIR / "topics_bar.png")
 plt.close()
+
+# Read README
+readme_file = Path("README.md")
+readme_text = readme_file.read_text()
+
+# Update total problems
+total_problems = len(df)
+import re
+readme_text = re.sub(r"Total problems solved: \d+", f"Total problems solved: {total_problems}", readme_text)
+
+# Save
+readme_file.write_text(readme_text)
