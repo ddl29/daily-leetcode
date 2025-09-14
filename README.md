@@ -1,6 +1,6 @@
 # Daily LeetCode Practice 🧑‍💻
 
-## Total problems solved: 3
+## Total problems solved: 4
 
 <table>
 <tr>
@@ -16,7 +16,7 @@
 - [x] dummy
 - [x] dynamic_programming
 - [x] graph
-- [x] hash_table
+- [x] hast_table
 - [x] test
 
 </td>
