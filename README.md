@@ -2,8 +2,8 @@
 
 ## Total problems solved: 0
 
-  ![Difficulty Pie](charts/difficulty_pie.png)
-  ![Topics Bar](charts/topics_bar.png)
+![Difficulty Pie](charts/difficulty_pie.png)
+![Cumulative Line](charts/cumulative_line.png)
 
 ---
 

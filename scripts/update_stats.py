@@ -123,7 +123,7 @@ else:
 total_problems = len(df)
 
 # Update total problems line
-pattern = r"^# Total problems solved: \d+"
+pattern = r"^## Total problems solved: \d+"
 readme_text = re.sub(
     pattern,
     f"# Total problems solved: {total_problems}",
