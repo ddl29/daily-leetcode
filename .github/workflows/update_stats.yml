@@ -1,5 +1,8 @@
 name: Update LeetCode Stats
 
+permissions:
+  contents: write
+
 on:
   push:
     paths:
@@ -32,6 +35,10 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add problems.csv charts/*.png
+          git add problems.csv
+          if [ -n "$(ls ./charts/*.png 2>/dev/null)" ]; then
+              git add ./charts/*.png
+          fi
           git commit -m "Update LeetCode stats and charts" || echo "No changes to commit"
-          git push
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+
