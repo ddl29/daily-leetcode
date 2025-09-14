@@ -10,4 +10,4 @@ function twoSum(nums, target) {
         map[nums[i]] = i;
     }
     return [];
-}
+}// trigger GitHub Actions
