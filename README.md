@@ -2,17 +2,30 @@
 
 ## Total problems solved: 3
 
-![Difficulty Pie](charts/difficulty_pie.png)
-![Cumulative Line](charts/cumulative_line.png)
+<table>
+<tr>
+<td>
 
----
+![Difficulty Pie](charts/difficulty_pie.png)
+
+</td>
+<td>
+
 ## Topics Covered
 - [x] array
 - [x] dummy
 - [x] dynamic_programming
 - [x] graph
-- [x] hast_table
+- [x] hash_table
 - [x] test
+
+</td>
+</tr>
+</table>
+
+### Historic log
+![Cumulative Line](charts/cumulative_line.png)
+
 ---
 
 ## 🚀 How to Use This Repo
