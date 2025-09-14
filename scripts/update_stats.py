@@ -4,97 +4,143 @@ from pathlib import Path
 from datetime import date
 import subprocess
 import re
-from pathlib import Path
 
-# CSV path
+# Paths
 CSV_FILE = Path("problems.csv")
 CHARTS_DIR = Path("charts")
 CHARTS_DIR.mkdir(exist_ok=True)
 
-# Walk through the repo and find the latest file added
+# Collect problems
 for file_path in Path(".").rglob("*.*"):
     if file_path.suffix not in [".js", ".py", ".java"]:
         continue
     if "scripts" in file_path.parts:  # skip files inside scripts folder
         continue
-    # Here you could filter to only new files pushed if needed
 
-    # Extract metadata
-    problem_name = " ".join(word.capitalize() for word in file_path.stem.split("_"))
-    difficulty = file_path.parent.name.capitalize()
-    topic = file_path.parent.parent.name.capitalize()
-    language = {"js":"JavaScript","py":"Python","java":"Java"}[file_path.suffix[1:]]
+    # Extract difficulty from folder
+    if file_path.parts[0] not in ["Easy", "Medium", "Hard"]:
+        continue
+    difficulty = file_path.parts[0]
+
+    # Extract problem number + name
+    stem = file_path.stem  # e.g. "1_two_sum"
+    parts = stem.split("_", 1)
+    problem_number = parts[0]
+    problem_name = (
+        parts[1].replace("_", " ").title() if len(parts) > 1 else f"Problem {problem_number}"
+    )
+
+    # Language
+    language = {"js": "JavaScript", "py": "Python", "java": "Java"}[file_path.suffix[1:]]
+
+    # Get commit message for this file
     commit_msg = subprocess.getoutput(f'git log -1 --pretty=%B "{file_path}"')
+
+    # Extract hashtags (topics)
+    topics = re.findall(r"#(\w+)", commit_msg)
+    topics_str = ";".join(topics) if topics else ""
+
     today = date.today().isoformat()
 
-    # Append to CSV
+    # Load or create CSV
     if CSV_FILE.exists():
         df = pd.read_csv(CSV_FILE)
     else:
-        df = pd.DataFrame(columns=["Date","Problem","Link","Difficulty","Topic","Language"])
+        df = pd.DataFrame(
+            columns=["Date", "ProblemNumber", "ProblemName", "Difficulty", "Topics", "Language", "CommitMessage"]
+        )
 
-    # Avoid duplicates
-    if problem_name not in df["Problem"].values:
-        df = pd.concat([df, pd.DataFrame([{
-            "Date": today,
-            "Problem": problem_name,
-            "Link": commit_msg,
-            "Difficulty": difficulty,
-            "Topic": topic,
-            "Language": language
-        }])], ignore_index=True)
+    # Avoid duplicates by problem number
+    if int(problem_number) not in df["ProblemNumber"].values:
+        df = pd.concat(
+            [
+                df,
+                pd.DataFrame(
+                    [
+                        {
+                            "Date": today,
+                            "ProblemNumber": int(problem_number),
+                            "ProblemName": problem_name,
+                            "Difficulty": difficulty,
+                            "Topics": topics_str,
+                            "Language": language,
+                            "CommitMessage": commit_msg.strip(),
+                        }
+                    ]
+                ),
+            ],
+            ignore_index=True,
+        )
         df.to_csv(CSV_FILE, index=False)
 
-
-# Read CSV
+# Read CSV again for charts
 df = pd.read_csv(CSV_FILE)
 
 # -------------------------------
 # Difficulty Pie Chart
 # -------------------------------
-# Ensure all difficulties are included even if count is 0
-difficulty_order = ['Easy', 'Medium', 'Hard']
-df['Difficulty'] = pd.Categorical(df['Difficulty'], categories=difficulty_order)
-difficulty_counts = df['Difficulty'].value_counts().sort_index()
+difficulty_order = ["Easy", "Medium", "Hard"]
+df["Difficulty"] = pd.Categorical(df["Difficulty"], categories=difficulty_order)
+difficulty_counts = df["Difficulty"].value_counts().sort_index()
 
-plt.figure(figsize=(5,5))  # square figure for pie
+plt.figure(figsize=(5, 5))
 difficulty_counts.plot.pie(
-    autopct='%1.1f%%',
-    colors=['#8ecae6', '#219ebc', '#023047'],
-    startangle=90
+    autopct="%1.1f%%",
+    colors=["#8ecae6", "#219ebc", "#023047"],
+    startangle=90,
 )
-plt.title('Problems by Difficulty')
-plt.ylabel('')  # remove default ylabel
+plt.title("Problems by Difficulty")
+plt.ylabel("")
 plt.tight_layout()
 plt.savefig(CHARTS_DIR / "difficulty_pie.png")
 plt.close()
 
 # -------------------------------
-# Topic Bar Chart
+# Line Chart of Cumulative Solves
 # -------------------------------
-# Sort topics alphabetically or by your preferred order
-topic_counts = df['Topic'].value_counts().sort_index()
-plt.figure(figsize=(6,4))
-topic_counts.plot.bar(color='#fb8500')
-plt.title('Problems by Topic')
-plt.ylabel('Count')
-plt.xticks(rotation=45, ha='right')
+df["Date"] = pd.to_datetime(df["Date"])
+df_sorted = df.sort_values("Date")
+df_sorted["Cumulative"] = range(1, len(df_sorted) + 1)
+
+plt.figure(figsize=(6, 4))
+plt.plot(df_sorted["Date"], df_sorted["Cumulative"], marker="o")
+plt.title("Cumulative Problems Solved Over Time")
+plt.xlabel("Date")
+plt.ylabel("Total Solved")
 plt.tight_layout()
-plt.savefig(CHARTS_DIR / "topics_bar.png")
+plt.savefig(CHARTS_DIR / "cumulative_line.png")
 plt.close()
 
-
-
-# Update README total problems solved count
+# -------------------------------
+# Update README
+# -------------------------------
 readme_file = Path("README.md")
-readme_text = readme_file.read_text()
+if readme_file.exists():
+    readme_text = readme_file.read_text()
+else:
+    readme_text = "# LeetCode Progress\n\n# Total problems solved: 0\n"
 
 total_problems = len(df)
 
-# Match line starting with "# Total problems solved:" and any number
+# Update total problems line
 pattern = r"^# Total problems solved: \d+"
+readme_text = re.sub(
+    pattern,
+    f"# Total problems solved: {total_problems}",
+    readme_text,
+    flags=re.MULTILINE,
+)
 
-# Replace with current total
-readme_text = re.sub(pattern, f"# Total problems solved: {total_problems}", readme_text, flags=re.MULTILINE)
+# Add topics checklist
+all_topics = sorted(set(";".join(df["Topics"].dropna()).split(";")) - {""})
+checklist = "\n".join([f"- [x] {t}" for t in all_topics])
 
-readme_file.write_text(readme_text)
+if "## Topics Covered" in readme_text:
+    readme_text = re.sub(
+        r"## Topics Covered.*?(?=\n##|\Z)",
+        f"## Topics Covered\n{checklist}\n",
+        readme_text,
+        flags=re.S,
+    )
+else:
+    readme_text += f"\n\n## Topics Covered\n{checklist}\n"

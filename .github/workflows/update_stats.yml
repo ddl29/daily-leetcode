@@ -6,10 +6,9 @@ permissions:
 on:
   push:
     paths:
-      - 'arrays/**'
-      - 'strings/**'
-      - 'dynamic-programming/**'
-      - 'graphs/**'
+      - 'Easy/**'
+      - 'Medium/**'
+      - 'Hard/**'
 
 jobs:
   update:
@@ -41,4 +40,3 @@ jobs:
           fi
           git commit -m "Update LeetCode stats and charts" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
-
