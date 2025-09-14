@@ -63,11 +63,13 @@ readme_file = Path("README.md")
 readme_text = readme_file.read_text()
 
 total_problems = len(df)
-# Replace the line containing "Total problems solved:"
+
+# Replace the line starting with "- Total problems solved:" and bold number
 readme_text = re.sub(
-    r"Total problems solved: \*\*\d+\*\*",
-    f"Total problems solved: **{total_problems}**",
-    readme_text
+    r"^(\s*-\s*Total problems solved:\s*\*\*)\d+(\*\*)",
+    rf"\1{total_problems}\2",
+    readme_text,
+    flags=re.MULTILINE
 )
 
 readme_file.write_text(readme_text)
