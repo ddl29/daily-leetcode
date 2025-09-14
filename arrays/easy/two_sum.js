@@ -1,6 +1,5 @@
 // Problem: Two Sum
 // Link: https://leetcode.com/problems/two-sum/
-// @author Daniel Diaz
 
 function twoSum(nums, target) {
     const map = {};
