@@ -1,6 +1,5 @@
 // Problem: Two Sum
 // Link: https://leetcode.com/problems/two-sum/
-// testing 2
 
 function twoSum(nums, target) {
     const map = {};
@@ -10,4 +9,4 @@ function twoSum(nums, target) {
         map[nums[i]] = i;
     }
     return [];
-}// trigger GitHub Actions
+}
