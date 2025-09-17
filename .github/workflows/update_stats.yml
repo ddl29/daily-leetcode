@@ -45,4 +45,4 @@ jobs:
         uses: Ilshidur/action-discord@master
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          args: "✅ LeetCode stats update workflow completed successfully for ${{ github.repository }}!"
+          args: "LeetCode stats update workflow for ${{ github.repository }} finished with status: ${{ job.status }}!"
