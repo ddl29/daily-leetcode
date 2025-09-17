@@ -42,7 +42,13 @@ jobs:
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
 
       - name: Discord notification
-        uses: Ilshidur/action-discord@master
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          args: "LeetCode stats update workflow for ${{ github.repository }} finished with status: ${{ job.status }}!"
+        if: always()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          STATUS="${{ job.status }}"
+          REPO="${{ github.repository }}"
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"content\": \"LeetCode stats update workflow for $REPO finished with status: $STATUS!\"}" \
+               $DISCORD_WEBHOOK
