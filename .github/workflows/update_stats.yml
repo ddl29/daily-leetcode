@@ -40,3 +40,9 @@ jobs:
           fi
           git commit -m "Update LeetCode stats and charts" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+
+      - name: Discord notification
+        uses: Ilshidur/action-discord@master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          args: "✅ LeetCode stats update workflow completed successfully for ${{ github.repository }}!"
