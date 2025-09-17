@@ -1,6 +1,6 @@
 # Daily LeetCode Practice 🧑‍💻
 
-## Total problems solved: 1
+## Total problems solved: 2
 
 <table>
 <tr>
