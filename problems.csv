@@ -2,3 +2,4 @@ Date,ProblemNumber,ProblemName,Difficulty,Topics,Language,CommitMessage
 2025-09-16,217,Contains Duplicate,Easy,array;hash_table;sorting,JavaScript,217. Contains Duplicate -- #array #hash_table #sorting
 2025-09-17,1,Two Sum,Easy,array;hash_table,JavaScript,1. Two Sum -- #array #hash_table
 2025-09-17,242,Valid Anagram,Easy,hash_table;string;sorting,JavaScript,242. Valid Anagram -- #hash_table #string #sorting
+2025-09-18,125,Valid Palindrome,Easy,two_pointers;string,JavaScript,125. Valid Palindrome -- #two_pointers #string

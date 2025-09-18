@@ -1,6 +1,6 @@
 # Daily LeetCode Practice 🧑‍💻
 
-## Total problems solved: 3
+## Total problems solved: 4
 
 <table>
 <tr>
@@ -16,6 +16,7 @@
 - [x] hash_table
 - [x] sorting
 - [x] string
+- [x] two_pointers
 
 </td>
 </tr>
